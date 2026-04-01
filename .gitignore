@@ -15,6 +15,13 @@ OpenCore-Catalina/EFI/OC/Resources/
 # see macOS.xml
 BaseSystem.qcow2
 
+# Offline installer image converted from InstallAssistant.iso.
+# see macOS.xml
+InstallAssistant.qcow2
+
+# libvirt transient disk overlay
+OpenCore/*.TRANSIENT-*
+
 # Disk images produce diffs on every snapshot, but delta-managing
 # binary disk images is infeasible and outside the scope of this repo.
 # Suppress with: git update-index --assume-unchanged OpenCore/OpenCore.qcow2
