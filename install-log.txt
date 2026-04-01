@@ -54,3 +54,95 @@ macOS Tahoe (26) Setup Assistant hangs at "Update Mac Automatically" with
 https://github.com/Coopydood/ultimate-macOS-KVM/issues/187
 
 Workaround: install Sequoia first, then upgrade to Tahoe in-place.
+
+
+Select Your Country or Region
+- Japan
+
+Transfer Your Data to This Mac
+- Set up as new
+
+Written and Spoken Languages
+- Preferred Languages
+  - English (Japan)
+  - Japanese
+- Input Sources
+  - ABC
+  - Japanese - Romaji
+- Dictation
+  - English (United States)
+
+Accessibility
+- Not Now
+
+How Do You Connect?
+- My computer does not connect to the Internet
+
+Data & Privacy
+Create a Mac Account
+Terms and Conditions
+
+Enable Location Services
+- [] Enable Location Services on this Mac
+
+Select Your Time Zone
+- [] Set time zone automatically using current location
+
+地図から選択
+Closest City: Tokyo - Japan
+
+Analytics
+- [] Share Mac Analytics with Apple
+- [] Share crash and usage data with app developers
+
+Screen Time
+- Set Up Later
+
+Choose Your Look
+- Light
+
+Update Mac Automatically
+- Only Download Automatically
+
+Welcome to Mac
+
+Keyboard Setup Assistant
+左Shift右は普通にz、右shift左は\では通らず、隣の/を入力したらSelect the Keyboard Typeに「JIS (Japan)」が表示された。
+
+その後シャットダウン
+Reopen windows when logging back in は一応無効化（Windowsの高速スタートアップのような、ディスクにロックがかかる機能だと嬉しくない）
+
+---
+
+virsh --connect qemu:///system edit macOS
+SequoiaInstallAssistant.qcow2 => InstallAssistant.qcow2
+
+meta+space terminal
+% open /Volumes/InstallAssistant/InstallAssistant.pkg
+
+Introduction
+Destination Select (skipped)
+Installation Type
+  Click Install to perform a standard installation of this software on the disk "Macintosh HD".
+The installation was successful.
+
+% open "/Applications/Install macOS Tahoe.app"
+
+---
+
+50%ほどでハング
+
+ロールバックして
+Sequoiaからネットワークに接続し、その経路でアップグレードを試みる
+ <memballoon model='none'/>の前
+
+  <interface type='bridge'>
+    <source bridge='br0'/>
+    <model type='vmxnet3'/>
+    <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+  </interface>
+
+  qemu-xhci,id=xhci → qemu-xhci,id=xhci,bus=pcie.0,addr=0x3
+  usb-ehci,id=ehci → usb-ehci,id=ehci,bus=pcie.0,addr=0x4
+  ich9-intel-hda → ich9-intel-hda,bus=pcie.0,addr=0x5
+  vmware-svga → vmware-svga,bus=pcie.0,addr=0x7
