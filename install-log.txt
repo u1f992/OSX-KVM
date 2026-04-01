@@ -1,0 +1,48 @@
+Select Your Country or Region
+- Japan
+
+Transfer Your Data to This Mac
+- Set up as new
+
+Written and Spoken Languages
+- Preferred Languages
+  - English (Japan)
+  - Japanese
+- Input Sources
+  - ABC
+  - Japanese - Romaji
+- Dictation
+  - English (United States)  ... Japaneseもあるが使わないので設定しなくていいこのままで
+
+Accessibility
+- Not Now
+
+How Do You Connect?
+- My computer does not connect to the internet
+
+Data & Privacy
+Create a Mac Account
+Terms and Conditions
+
+Enable Location Services
+- [] Enable Location Services on this Mac
+
+Select Your Time Zone
+- [] Set time zone automatically using current location
+- Tokyo - Japan ... 地図をクリック
+
+Analytics
+- [] Share Mac Analytics with Apple  ... Hacintoshの情報を流されても困るでしょ
+- [] Share crash and usage data with app developers
+
+Screen Time
+- Set Up Later
+
+Your Mac is Ready for FileVault
+- Not Now
+
+Choose Your Look
+- Light
+
+Update Mac Automatically
+- Only Download Automatically
