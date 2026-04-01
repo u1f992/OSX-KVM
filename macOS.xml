@@ -108,26 +108,26 @@
     -->
     <qemu:arg value='12,cores=2,sockets=3,threads=2,maxcpus=12'/>
     <qemu:arg value='-device'/>
-    <qemu:arg value='qemu-xhci,id=xhci'/>
+    <qemu:arg value='qemu-xhci,id=xhci,bus=pcie.0,addr=0x3'/>
     <qemu:arg value='-device'/>
     <qemu:arg value='usb-kbd,bus=xhci.0'/>
     <qemu:arg value='-device'/>
     <qemu:arg value='usb-tablet,bus=xhci.0'/>
     <qemu:arg value='-device'/>
-    <qemu:arg value='usb-ehci,id=ehci'/>
+    <qemu:arg value='usb-ehci,id=ehci,bus=pcie.0,addr=0x4'/>
     <qemu:arg value='-device'/>
     <qemu:arg value='isa-applesmc,osk=ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc'/>
     <qemu:arg value='-smbios'/>
     <qemu:arg value='type=2'/>
     <qemu:arg value='-device'/>
-    <qemu:arg value='ich9-intel-hda'/>
+    <qemu:arg value='ich9-intel-hda,bus=pcie.0,addr=0x5'/>
     <qemu:arg value='-device'/>
     <qemu:arg value='hda-duplex,audiodev=audio1'/>
     <qemu:arg value='-netdev'/>
     <qemu:arg value='user,id=net0,hostfwd=tcp::2222-:22'/>
     <qemu:arg value='-device'/>
-    <qemu:arg value='virtio-net-pci,netdev=net0,id=net0,mac=52:54:00:c9:18:27'/>
+    <qemu:arg value='virtio-net-pci,netdev=net0,id=net0,mac=52:54:00:c9:18:27,bus=pcie.0,addr=0x6'/>
     <qemu:arg value='-device'/>
-    <qemu:arg value='vmware-svga'/>
+    <qemu:arg value='vmware-svga,bus=pcie.0,addr=0x7'/>
   </qemu:commandline>
 </domain>
