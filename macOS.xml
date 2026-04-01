@@ -7,7 +7,7 @@
     QEMU emulator version 8.2.2 (Debian 1:8.2.2+ds-0ubuntu1.13)
     Copyright (c) 2003-2023 Fabrice Bellard and the QEMU Project developers
     $ virsh domxml-to-native qemu-argv macOS.xml
-    LC_ALL=C PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin USER=root HOME=/var/lib/libvirt/qemu/domain--1-macOS XDG_DATA_HOME=/var/lib/libvirt/qemu/domain--1-macOS/.local/share XDG_CACHE_HOME=/var/lib/libvirt/qemu/domain--1-macOS/.cache XDG_CONFIG_HOME=/var/lib/libvirt/qemu/domain--1-macOS/.config /usr/bin/qemu-system-x86_64 -name guest=macOS,debug-threads=on -S -object '{"qom-type":"secret","id":"masterKey0","format":"raw","file":"/var/lib/libvirt/qemu/domain--1-macOS/master-key.aes"}' -machine pc-q35-8.2,usb=off,dump-guest-core=off,memory-backend=pc.ram,hpet=off,acpi=on -accel kvm -cpu qemu64 -m size=67108864k -object '{"qom-type":"memory-backend-ram","id":"pc.ram","size":68719476736}' -overcommit mem-lock=off -smp 1,sockets=1,cores=1,threads=1 -uuid 3ace651d-db48-42e8-8873-24817cf393b3 -no-user-config -nodefaults -chardev socket,id=charmonitor,path=/var/lib/libvirt/qemu/domain--1-macOS/monitor.sock,server=on,wait=off -mon chardev=charmonitor,id=monitor,mode=control -rtc base=utc,driftfix=slew -global kvm-pit.lost_tick_policy=delay -no-shutdown -boot strict=on -audiodev '{"id":"audio1","driver":"spice"}' -spice port=5901,addr=127.0.0.1,disable-ticketing=on,seamless-migration=on -global ICH9-LPC.noreboot=off -watchdog-action reset -drive if=pflash,format=raw,readonly=on,file=/home/mukai/Documents/OSX-KVM/OVMF_CODE_4M.fd -drive if=pflash,format=raw,file=/home/mukai/Documents/OSX-KVM/OVMF_VARS-1920x1080.fd -cpu Skylake-Client,-hle,-rtm,kvm=on,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on,+ssse3,+sse4.2,+popcnt,+avx,+aes,+xsave,+xsaveopt,check -smp 12,cores=2,sockets=3,threads=2,maxcpus=12 -device qemu-xhci,id=xhci -device usb-kbd,bus=xhci.0 -device usb-tablet,bus=xhci.0 -device usb-ehci,id=ehci -device 'isa-applesmc,osk=ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc' -smbios type=2 -device ich9-intel-hda -device hda-duplex,audiodev=audio1 -device ich9-ahci,id=sata -drive id=OpenCoreBoot,if=none,snapshot=on,format=qcow2,file=/home/mukai/Documents/OSX-KVM/OpenCore/OpenCore.qcow2 -device ide-hd,bus=sata.2,drive=OpenCoreBoot -drive id=InstallMedia,if=none,file=/home/mukai/Documents/OSX-KVM/BaseSystem.img,format=raw -device ide-hd,bus=sata.3,drive=InstallMedia -drive id=MacHDD,if=none,file=/home/mukai/Documents/OSX-KVM/mac_hdd_ng.img,format=qcow2 -device ide-hd,bus=sata.4,drive=MacHDD -netdev user,id=net0,hostfwd=tcp::2222-:22 -device virtio-net-pci,netdev=net0,id=net0,mac=52:54:00:c9:18:27 -device vmware-svga -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny -msg timestamp=on
+    LC_ALL=C PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin USER=root HOME=/var/lib/libvirt/qemu/domain--1-macOS XDG_DATA_HOME=/var/lib/libvirt/qemu/domain--1-macOS/.local/share XDG_CACHE_HOME=/var/lib/libvirt/qemu/domain--1-macOS/.cache XDG_CONFIG_HOME=/var/lib/libvirt/qemu/domain--1-macOS/.config /usr/bin/qemu-system-x86_64 -name guest=macOS,debug-threads=on -S -object '{"qom-type":"secret","id":"masterKey0","format":"raw","file":"/var/lib/libvirt/qemu/domain--1-macOS/master-key.aes"}' -machine pc-q35-8.2,usb=off,dump-guest-core=off,memory-backend=pc.ram,hpet=off,acpi=on -accel kvm -cpu qemu64 -m size=67108864k -object '{"qom-type":"memory-backend-ram","id":"pc.ram","size":68719476736}' -overcommit mem-lock=off -smp 1,sockets=1,cores=1,threads=1 -uuid 4db8081d-bd04-4645-aaab-d4c1a912e23a -no-user-config -nodefaults -chardev socket,id=charmonitor,path=/var/lib/libvirt/qemu/domain--1-macOS/monitor.sock,server=on,wait=off -mon chardev=charmonitor,id=monitor,mode=control -rtc base=utc,driftfix=slew -global kvm-pit.lost_tick_policy=delay -no-shutdown -boot strict=on -device '{"driver":"pcie-root-port","port":8,"chassis":1,"id":"pci.1","bus":"pcie.0","multifunction":true,"addr":"0x1"}' -device '{"driver":"pcie-pci-bridge","id":"pci.2","bus":"pci.1","addr":"0x0"}' -device '{"driver":"pcie-root-port","port":9,"chassis":3,"id":"pci.3","bus":"pcie.0","addr":"0x1.0x1"}' -device '{"driver":"ahci","id":"sata1","bus":"pci.2","addr":"0x1"}' -blockdev '{"driver":"file","filename":"/home/mukai/Documents/OSX-KVM/OpenCore/OpenCore.qcow2","node-name":"libvirt-3-storage","auto-read-only":true,"discard":"unmap"}' -blockdev '{"node-name":"libvirt-3-format","read-only":false,"driver":"qcow2","file":"libvirt-3-storage"}' -device '{"driver":"ide-hd","bus":"sata1.2","drive":"libvirt-3-format","id":"sata1-0-2","bootindex":1}' -blockdev '{"driver":"file","filename":"/home/mukai/Documents/OSX-KVM/BaseSystem.qcow2","node-name":"libvirt-2-storage","auto-read-only":true,"discard":"unmap"}' -blockdev '{"node-name":"libvirt-2-format","read-only":false,"driver":"qcow2","file":"libvirt-2-storage"}' -device '{"driver":"ide-hd","bus":"sata1.3","drive":"libvirt-2-format","id":"sata1-0-3"}' -blockdev '{"driver":"file","filename":"/home/mukai/Documents/OSX-KVM/mac_hdd_ng.img","node-name":"libvirt-1-storage","auto-read-only":true,"discard":"unmap"}' -blockdev '{"node-name":"libvirt-1-format","read-only":false,"driver":"qcow2","file":"libvirt-1-storage"}' -device '{"driver":"ide-hd","bus":"sata1.4","drive":"libvirt-1-format","id":"sata1-0-4"}' -audiodev '{"id":"audio1","driver":"spice"}' -spice port=5901,addr=127.0.0.1,disable-ticketing=on,seamless-migration=on -global ICH9-LPC.noreboot=off -watchdog-action reset -drive if=pflash,format=raw,readonly=on,file=/home/mukai/Documents/OSX-KVM/OVMF_CODE_4M.fd -drive if=pflash,format=raw,file=/home/mukai/Documents/OSX-KVM/OVMF_VARS-1920x1080.fd -cpu Skylake-Client,-hle,-rtm,kvm=on,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on,+ssse3,+sse4.2,+popcnt,+avx,+aes,+xsave,+xsaveopt,check -smp 12,cores=2,sockets=3,threads=2,maxcpus=12 -device qemu-xhci,id=xhci -device usb-kbd,bus=xhci.0 -device usb-tablet,bus=xhci.0 -device usb-ehci,id=ehci -device 'isa-applesmc,osk=ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc' -smbios type=2 -device ich9-intel-hda -device hda-duplex,audiodev=audio1 -netdev user,id=net0,hostfwd=tcp::2222-:22 -device virtio-net-pci,netdev=net0,id=net0,mac=52:54:00:c9:18:27 -device vmware-svga -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny -msg timestamp=on
 
     Apart from libvirt's standard management options (monitor socket, sandbox,
     SPICE, etc.), the generated command line is identical to OpenCore-Boot.sh.
@@ -59,6 +59,39 @@
     <video>
       <model type='none'/>
     </video>
+    <!--
+    OpenCore-Boot.sh uses "ich9-ahci" but libvirt emits "ahci".
+    "ahci" is an alias for "ich9-ahci" so they are equivalent:
+
+    $ qemu-system-x86_64 -device help 2>&1 | grep ahci
+    name "ich9-ahci", bus PCI, alias "ahci"
+    -->
+    <controller type='sata' index='1'/>
+    <!--
+    libvirt snapshots require all disks to be qcow2.
+    BaseSystem is converted from raw:
+
+    $ qemu-img convert -f raw -O qcow2 BaseSystem.img BaseSystem.qcow2
+    -->
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/home/mukai/Documents/OSX-KVM/OpenCore/OpenCore.qcow2'/>
+      <target dev='sda' bus='sata'/>
+      <transient/>
+      <address type='drive' controller='1' bus='0' target='0' unit='2'/>
+    </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/home/mukai/Documents/OSX-KVM/BaseSystem.qcow2'/>
+      <target dev='sdb' bus='sata'/>
+      <address type='drive' controller='1' bus='0' target='0' unit='3'/>
+    </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/home/mukai/Documents/OSX-KVM/mac_hdd_ng.img'/>
+      <target dev='sdc' bus='sata'/>
+      <address type='drive' controller='1' bus='0' target='0' unit='4'/>
+    </disk>
     <memballoon model='none'/>
   </devices>
   <qemu:commandline>
@@ -90,20 +123,6 @@
     <qemu:arg value='ich9-intel-hda'/>
     <qemu:arg value='-device'/>
     <qemu:arg value='hda-duplex,audiodev=audio1'/>
-    <qemu:arg value='-device'/>
-    <qemu:arg value='ich9-ahci,id=sata'/>
-    <qemu:arg value='-drive'/>
-    <qemu:arg value='id=OpenCoreBoot,if=none,snapshot=on,format=qcow2,file=/home/mukai/Documents/OSX-KVM/OpenCore/OpenCore.qcow2'/>
-    <qemu:arg value='-device'/>
-    <qemu:arg value='ide-hd,bus=sata.2,drive=OpenCoreBoot'/>
-    <qemu:arg value='-drive'/>
-    <qemu:arg value='id=InstallMedia,if=none,file=/home/mukai/Documents/OSX-KVM/BaseSystem.img,format=raw'/>
-    <qemu:arg value='-device'/>
-    <qemu:arg value='ide-hd,bus=sata.3,drive=InstallMedia'/>
-    <qemu:arg value='-drive'/>
-    <qemu:arg value='id=MacHDD,if=none,file=/home/mukai/Documents/OSX-KVM/mac_hdd_ng.img,format=qcow2'/>
-    <qemu:arg value='-device'/>
-    <qemu:arg value='ide-hd,bus=sata.4,drive=MacHDD'/>
     <qemu:arg value='-netdev'/>
     <qemu:arg value='user,id=net0,hostfwd=tcp::2222-:22'/>
     <qemu:arg value='-device'/>

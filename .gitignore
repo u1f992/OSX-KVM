@@ -10,3 +10,12 @@
 OVMF_VARS*.fd
 OpenCore-Catalina/EFI/OC/Resources/
 .direnv/
+
+# Converted from BaseSystem.img for libvirt snapshot support.
+# see macOS.xml
+BaseSystem.qcow2
+
+# Disk images produce diffs on every snapshot, but delta-managing
+# binary disk images is infeasible and outside the scope of this repo.
+# Suppress with: git update-index --assume-unchanged OpenCore/OpenCore.qcow2
+# OpenCore/OpenCore.qcow2
