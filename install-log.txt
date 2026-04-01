@@ -46,3 +46,11 @@ Choose Your Look
 
 Update Mac Automatically
 - Only Download Automatically
+
+---
+
+macOS Tahoe (26) Setup Assistant hangs at "Update Mac Automatically" with
+100% CPU and no I/O, even offline. This is a known issue:
+https://github.com/Coopydood/ultimate-macOS-KVM/issues/187
+
+Workaround: install Sequoia first, then upgrade to Tahoe in-place.

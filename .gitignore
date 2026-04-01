@@ -15,9 +15,10 @@ OpenCore-Catalina/EFI/OC/Resources/
 # see macOS.xml
 BaseSystem.qcow2
 
-# Offline installer image converted from InstallAssistant.iso.
+# Offline installer images converted from ISO.
 # see macOS.xml
 InstallAssistant.qcow2
+SequoiaInstallAssistant.qcow2
 
 # libvirt transient disk overlay
 OpenCore/*.TRANSIENT-*
