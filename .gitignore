@@ -19,6 +19,15 @@ BaseSystem.qcow2
 # see macOS.xml
 InstallAssistant.qcow2
 SequoiaInstallAssistant.qcow2
+TahoeInstallAssistant.qcow2
+Tahoe26.1InstallAssistant.qcow2
+
+# Tahoe BaseSystem converted from raw.
+TahoeBaseSystem.qcow2
+
+# perf profiling data
+perf.data
+OpenCore/perf.data
 
 # libvirt transient disk overlay
 OpenCore/*.TRANSIENT-*
