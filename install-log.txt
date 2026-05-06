@@ -217,3 +217,164 @@ fetch-macOS-v2で取得できるものは最新のBaseSystem
 
 SequoiaのBaseSystemにもバックポート更新が入っていると仮定すると、
 BaseSystemより古いインストーラは使えない（インターネット接続＝更新を強制する）のではと考えられる
+
+---
+
+VMを起動するたびにブート選択（EFI／macOS Base System／Macintosh HD）が表示され、自動起動できていないことに気づいた。Ctrl+Enterでデフォルトを設定できるということだが、何回行っても自動起動されるようにならない。
+
+OpenCore.qcow2のconfig.plistを読みたい。
+
+```
+% diskutil list
+/dev/disk0 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:                            InstallAssistant       *18.2 GB    disk0
+
+/dev/disk1 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *2.6 GB     disk1
+   1:                  Apple_HFS macOS Base System       2.5 GB     disk1s1
+
+/dev/disk2 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *274.9 GB   disk2
+   1:                        EFI EFI                     209.7 MB   disk2s1
+   2:                 Apple_APFS Container disk4         274.7 GB   disk2s2
+
+/dev/disk3 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *402.7 MB   disk3
+   1:                        EFI EFI                     152.6 MB   disk3s1
+   2:           Linux Filesystem                         247.0 MB   disk3s2
+
+/dev/disk4 (synthesized):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      APFS Container Scheme -                      +274.7 GB   disk4
+                                 Physical Store disk2s2
+   1:                APFS Volume Macintosh HD - Data     27.1 GB    disk4s1
+   2:                APFS Volume Preboot                 2.8 GB     disk4s2
+   3:                APFS Volume Recovery                1.5 GB     disk4s3
+   4:                APFS Volume Macintosh HD            12.5 GB    disk4s4
+   5:              APFS Snapshot com.apple.os.update-... 12.5 GB    disk4s4s1
+   6:                APFS Volume VM                      1.1 MB     disk4s6
+```
+
+サイズからdisk3で間違いないと判断。
+
+```
+% sudo diskutil mount disk3s1
+Volume EFI on disk3s1 mounted
+% grep -A1 ">ShowPicker<" /Volumes/EFI/EFI/OC/config.plist
+                        <key>ShowPicker</key>
+                        <true/>
+% grep -A1 ">AllowSetDefault<" /Volumes/EFI/EFI/OC/config.plist
+                        <key>AllowSetDefault</key>
+                        <true/>
+% grep -A1 ">Timeout<" /Volumes/EFI/EFI/OC/config.plist
+                        <key>Timeout</key>
+                        <integer>2</integer>
+```
+
+設定は正常（ピッカー表示あり、Ctrl+Enterによるデフォルトの設定を許可、タイムアウト2秒。たしかにピッカー表示から2秒後に再表示されているように見える）。
+
+Ctrl+Enterで起動してシャットダウンしても、NVRAMファイルのModifyが動かないことを確認した。権限やAppArmorの設定ではないようだ。
+
+```
+$ virsh --connect qemu:///system dumpxml macOS | grep "OVMF_VARS" | tail -n 1
+    <qemu:arg value='if=pflash,format=raw,file=/ ... /OSX-KVM/OVMF_VARS-1920x1080.fd'/>
+$ stat / ... /OSX-KVM/OVMF_VARS-1920x1080.fd
+$ ls -la / ... /OSX-KVM/OVMF_VARS-1920x1080.fd
+-rw-rwxr--+ 1 mukai mukai 131072  4月  1 10:56 / ... /OSX-KVM/OVMF_VARS-1920x1080.fd
+$ getfacl / ... /OSX-KVM/OVMF_VARS-1920x1080.fd
+getfacl: 絶対パス名から先頭の '/' を削除
+
+# file: ... /OSX-KVM/OVMF_VARS-1920x1080.fd
+# owner: mukai
+# group: mukai
+user::rw-
+user:libvirt-qemu:rwx
+group::rw-
+mask::rwx
+other::r--
+
+$ sudo dmesg | grep -i denied
+```
+
+NVRAM書き込みに関連する設定も問題ようだ
+
+```
+% grep -A1 ">RequestBootVarRouting<" /Volumes/EFI/EFI/OC/config.plist
+                        <key>RequestBootVarRouting</key>
+                        <true/>
+% grep -A1 ">WriteFlash<" /Volumes/EFI/EFI/OC/config.plist
+                <key>WriteFlash</key>
+                <true/>
+% grep -A1 ">ConnectDrivers<" /Volumes/EFI/EFI/OC/config.plist
+                <key>ConnectDrivers</key>
+                <true/>
+```
+
+そもそもCODEとVARSが整合していないのではという仮説を立てた。フォークした時点のupstream（[4c378a4](https://github.com/kholia/OSX-KVM/tree/4c378a4b5e0b219783683012bec680325eb40719)）で[OVMF-notes.txt](https://github.com/kholia/OSX-KVM/blob/4c378a4b5e0b219783683012bec680325eb40719/OVMF-notes.txt#L3)が参照しているovmf-generic_2025.11-3_all.debに対応する（はず）のovmf_2025.11-3_all.debには、次の文言がある。
+
+```
+$ curl -sL https://snapshot.debian.org/archive/debian/20260109T022551Z/pool/main/e/edk2/ovmf_2025.11-3_all.deb \
+    | bsdtar -xOf - data.tar.xz \
+    | bsdtar -xOf - ./usr/share/doc/ovmf/NEWS.Debian.gz \
+    | zcat \
+    | grep -A1 "2MB VAR"
+  2MB VAR images are not compatible with 4MB CODE images. Users must
+  migrate both CODE and VARS images simultaneously.
+```
+
+VARSはバリアントのようにいくつか同梱されているが、これらは実は全部同じで、ovmf_2023.05-2_all.debまで含まれていたものと一致する2M用のものであることがわかった。これはCODEが4Mになっているのと不一致。
+
+```
+$ virsh --connect qemu:///system dumpxml macOS | grep "OVMF_[VERS,CODE]" | tail -n 2
+    <qemu:arg value='if=pflash,format=raw,readonly=on,file=/ ... /OSX-KVM/OVMF_CODE_4M.fd'/>
+    <qemu:arg value='if=pflash,format=raw,file=/ ... /OSX-KVM/OVMF_VARS-1920x1080.fd'/>
+$ ls -l / ... /OSX-KVM/OVMF_*.fd
+-rw-rwxr--+ 1 mukai mukai 3653632  3月 31 18:14 / ... /OSX-KVM/OVMF_CODE_4M.fd
+-rw-rwxr--+ 1 mukai mukai  131072  3月 31 18:14 / ... /OSX-KVM/OVMF_VARS-1024x768.fd
+-rw-rwxr--+ 1 mukai mukai  131072  4月  1 10:56 / ... /OSX-KVM/OVMF_VARS-1920x1080.fd
+-rw-rwxr--+ 1 mukai mukai  131072  3月 31 18:14 / ... /OSX-KVM/OVMF_VARS.fd
+$ cmp OVMF_VARS.fd OVMF_VARS-1024x768.fd && cmp OVMF_VARS.fd OVMF_VARS-1920x1080.fd && cmp OVMF_VARS-1024x768.fd OVMF_VARS-1920x1080.fd
+$ echo $?
+0
+$ curl -sL https://snapshot.debian.org/archive/debian/20230925T084104Z/pool/main/e/edk2/ovmf_2023.05-2_all.deb \
+  | bsdtar -xOf - data.tar.xz \
+  | xz -dc \
+  | bsdtar -xOf - ./usr/share/OVMF/OVMF_VARS.fd \
+  | cmp - / ... /OSX-KVM/OVMF_VARS.fd
+$ echo $?
+0
+```
+
+なおCODEは2025.11-3と一致している。
+
+```
+$ curl -sL https://snapshot.debian.org/archive/debian/20260109T022551Z/pool/main/e/edk2/ovmf-generic_2025.11-3_all.deb \
+  | bsdtar -xOf - data.tar.xz \
+  | xz -dc \
+  | bsdtar -xOf - ./usr/share/OVMF/OVMF_CODE_4M.fd \
+  | cmp - / ... /OSX-KVM/OVMF_CODE_4M.fd
+$ echo $?
+0
+```
+
+つまり、対応する4M用のOVMF_VARSをupstreamから取得して使えば整合し、自動選択の保存が可能になるはずだ。
+
+```
+$ curl -sL https://snapshot.debian.org/archive/debian/20260109T022551Z/pool/main/e/edk2/ovmf-generic_2025.11-3_all.deb \
+  | bsdtar -xOf - data.tar.xz \
+  | xz -dc \
+  | bsdtar -xOf - ./usr/share/OVMF/OVMF_VARS_4M.fd \
+  > / ... /OSX-KVM/OVMF_VARS_4M.fd
+$ sudo setfacl -m u:libvirt-qemu:rw / ... /OSX-KVM/OVMF_VARS_4M.fd
+$ virsh --connect qemu:///system edit macOS
+
+$ stat / ... /OSX-KVM/OVMF_VARS_4M.fd  # Modify時刻をメモ
+$ virsh --connect qemu:///system start macOS  # Ctrl+EnterでMacintosh HDを選択
+$ stat / ... /OSX-KVM/OVMF_VARS_4M.fd  # Modifyを比較
+```
+
+デフォルトの設定は当然fdへの書き込みを伴う

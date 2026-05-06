@@ -36,3 +36,5 @@ OpenCore/*.TRANSIENT-*
 # binary disk images is infeasible and outside the scope of this repo.
 # Suppress with: git update-index --assume-unchanged OpenCore/OpenCore.qcow2
 # OpenCore/OpenCore.qcow2
+
+!OVMF_VARS_4M.fd
